@@ -1,0 +1,95 @@
+version: "3.7"
+
+services: 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend_container
+    restart: always
+    ports:
+      - ${FRONTEND_PORT}:80
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+    ports:
+      - ${MONGO_PORT}:27017
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  backend:
+    build: 
+      context: ./backend 
+      dockerfile: Dockerfile
+    container_name: nestjs_container
+    restart: always
+    ports:
+      - ${NEST_PORT}:3000
+    depends_on:
+      - mongodb
+    env_file:
+      - ./backend/.env
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - app-network
+
+  producer:
+    build:
+      context: ./message-queue/producer
+      dockerfile: Dockerfile
+    container_name: producer
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - message-queue/producer/.env
+    networks:
+      - app-network
+
+  consumer:
+    build:
+      context: ./message-queue/consumer
+      dockerfile: Dockerfile
+    container_name: consumer
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - message-queue/consumer/.env
+    networks:
+      - app-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  app-network:
+    driver: bridge
