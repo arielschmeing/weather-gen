@@ -217,14 +217,3 @@ Este projeto é privado e não possui licença pública.
 
 **Ariel Schmeing**
 - GitHub: [@arielschmeing](https://github.com/arielschmeing)
-
-## 🙏 Agradecimentos
-
-- Google Gemini AI pela API de insights
-- Comunidade NestJS
-- Comunidade React
-- Todos os contribuidores de código aberto
-
----
-
-⭐ Se este projeto te ajudou, considere dar uma estrela!
