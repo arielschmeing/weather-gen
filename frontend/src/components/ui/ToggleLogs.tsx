@@ -1,5 +1,5 @@
 import type { LogType } from "@/app/types/global";
-import { ToggleGroup, ToggleGroupItem } from "./ToggleGroup";
+import { ToggleGroup, ToggleGroupItem } from "../base/ToggleGroup";
 
 interface ToggleLogsProps {
   logType: LogType;
@@ -14,7 +14,7 @@ export const ToggleLogs = ({ logType, setLogs }: ToggleLogsProps) => {
     <ToggleGroup
       type="single"
       value={logType}
-      onValueChange={(v) => v && setLogs(v as "all" | "daily")}
+      onValueChange={(v: string) => v && setLogs(v as "all" | "daily")}
       className="absolute top-[-60px] left-8"
       variant="outline"
     >

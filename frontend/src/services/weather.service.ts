@@ -10,7 +10,7 @@ const cacheWeatherLogs = new Map<string, Cache<WeatherLog[]>>();
 const cacheInsights = new Map<string, Insights>();
 
 export const weatherService = {
-  async logs(token: string | null): Promise<WeatherLog[] | undefined> {
+  async logs(token: string): Promise<WeatherLog[]> {
     const cache = validationCache({
       cache: cacheWeatherLogs,
       key: CACHE_KEY,
@@ -18,7 +18,6 @@ export const weatherService = {
     });
 
     if (cache) return cache;
-    if (!token) return;
 
     const { data, status } = await axios.get<WeatherLog[]>(
       API_PATHS.WEATHER_LOGS,
@@ -51,8 +50,8 @@ export const weatherService = {
 
     return data;
   },
-  async insights(token: string) {
-    if (cacheInsights.has(token)) return cacheInsights.get(token);
+  async insights(token: string): Promise<Insights> {
+    if (cacheInsights.has(token)) return cacheInsights.get(token)!;
 
     const { data, status } = await axios.post<Insights>(
       API_PATHS.INSIGHTS,

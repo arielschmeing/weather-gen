@@ -7,6 +7,7 @@ export const ROUTER_PATHS = {
   LOGIN: "/login",
   DASHBOARD: "/dashboard",
   USER: "/user",
+  EXPLORER: "/explorer",
 } as const;
 
 export const API_PATHS = {
@@ -17,7 +18,8 @@ export const API_PATHS = {
   WEATHER_LOGS: `${API}weather/logs`,
   EXPORT_CSV: `${API}weather/export.csv`,
   EXPORT_XLSX: `${API}weather/export.xlsx`,
-  INSIGHTS: `${API}weather/insight`
+  INSIGHTS: `${API}weather/insight`,
+  EXPLORER_ITEMS: `${API}explorer/items`,
 } as const;
 
 export const SKY_TYPES = {

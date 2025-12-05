@@ -5,6 +5,7 @@ import { useAuthStorage } from "@/app/store/AuthStorage";
 import { useNavigate } from "react-router";
 import { ROUTER_PATHS } from "@/lib/app.constants";
 import { userService } from "@/services/user.service";
+import { useToast } from "./useToast";
 
 const validations = {
   email: (value: string) => {
@@ -24,6 +25,7 @@ export const useRegister = () => {
   const { refreshToken, accessToken, setUser, payload } = useAuthStorage();
   const navigate = useNavigate();
   const { data, errors, setValue, submit } = useForm<Register>({ validations });
+  const { error } = useToast();
 
   const inputs: InputAttributes<Register>[] = [
     {
@@ -55,33 +57,32 @@ export const useRegister = () => {
   const actions = {
     register: {
       onClick: async () => {
-        if (!submit()) return;
+        if (!submit()) return error("Insira todos os campos de cadastro.");
 
-        refreshToken(null);
+        try {
+          refreshToken(null);
 
-        const isRegistred = await userService.register(data);
+          await userService.register(data);
 
-        if (!isRegistred) return;
+          const token = await userService.login({
+            email: data.email,
+            password: data.password,
+          });
 
-        const token = await userService.login({
-          email: data.email,
-          password: data.password,
-        });
+          refreshToken(token);
+          const id = payload()?.sub;
+          if (!id || !accessToken) throw new Error("Erro ao logar usuário");
 
-        if (!token) return;
+          const user = await userService.getUser({
+            id,
+            token: accessToken,
+          });
 
-        refreshToken(token);
-        const id = payload()?.sub;
-        if (!id || !accessToken) return;
-
-        const user = await userService.getUser({
-          id,
-          token: accessToken,
-        });
-
-        if (!user) return;
-        setUser(user);
-        navigate(ROUTER_PATHS.DASHBOARD);
+          setUser(user);
+          navigate(ROUTER_PATHS.DASHBOARD);
+        } catch {
+          return error("Usuário não cadastrado. Email ou Servidor indisponíveis.");
+        }
       },
     },
     login: {

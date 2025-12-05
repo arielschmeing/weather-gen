@@ -70,7 +70,7 @@ func sendToApi(weather Weather) error {
 			return fmt.Errorf("erro ao serializar payload: %w", err)
 	}
 
-	request, err := http.NewRequest("POST", os.Getenv("API_ENDPOINT"), bytes.NewBuffer(payload))
+	request, err := http.NewRequest("POST", os.Getenv("API_CONSUMER_ENDPOINT"), bytes.NewBuffer(payload))
 	
 	if(err != nil) {
 		return fmt.Errorf("erro ao criar a requisição: %w", err)

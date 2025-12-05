@@ -4,22 +4,30 @@ import type { LogType, WeatherLog } from "@/app/types/global";
 import { lastDay, lastWeek } from "@/lib/utils";
 import { weatherService } from "@/services/weather.service";
 import { use, useEffect, useMemo, useState } from "react";
+import { useToast } from "./useToast";
 
 export const useDashboard = () => {
   const [logs, setLogs] = useState<WeatherLog[]>([]);
   const [logType, setLogType] = useState<LogType>("daily");
   const { accessToken } = useAuthStorage();
   const { view } = use(MenuViewContext);
+  const { error } = useToast();
 
   useEffect(() => {
     const fetchLogs = async () => {
-      const response = await weatherService.logs(accessToken);
-      if (!response) return;
+      if (!accessToken) return error("Por favor faça login novamente.")
 
-      setLogs(response);
+      try {
+        const response = await weatherService.logs(accessToken);
+        setLogs(response);
+      } catch {
+        return error("Clima não resgatado.")
+      }
+
     };
     fetchLogs();
-  }, [accessToken]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filterLogs = useMemo(() => {
     if (logType === "daily")

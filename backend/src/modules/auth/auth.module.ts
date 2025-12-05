@@ -5,18 +5,21 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WeatherModule } from '../weather/weather.module';
+import { ExplorerModule } from '../explorer/explorer.module';
+import { Env } from 'src/config/env.schema';
 
 @Global()
 @Module({
   imports: [
+    forwardRef(() => ExplorerModule),
     forwardRef(() => UsersModule),
     forwardRef(() => WeatherModule),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: (config: ConfigService) => ({
+      useFactory: (config: ConfigService<Env>) => ({
         global: true,
-        secret: config.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: config.get('JWT_EXPIRATION') },
+        secret: config.getOrThrow('JWT_SECRET'),
+        signOptions: { expiresIn: config.getOrThrow('JWT_EXPIRATION') },
       }),
       inject: [ConfigService],
     }),

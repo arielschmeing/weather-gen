@@ -1,5 +1,5 @@
 import type { WeatherLog } from "@/app/types/global";
-import { Card, CardContent, CardFooter, CardHeader } from "./Card";
+import { Card, CardContent, CardFooter, CardHeader } from "../base/Card";
 import { useDetailWeather } from "@/hooks/useDetailWeather";
 import { Cloud } from "lucide-react";
 import { use } from "react";

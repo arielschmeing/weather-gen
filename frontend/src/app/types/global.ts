@@ -75,6 +75,22 @@ export interface Insights {
   summary: string;
 }
 
+export interface ItemsPagination {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: { name: string; url: string }[];
+}
+
+export interface Item {
+  attributes: string[];
+  category: string;
+  cost: number | null;
+  id: number;
+  name: string;
+  sprite: string;
+}
+
 export type LogType = "all" | "daily" | "week";
 
-export type ViewType = "current" | keyof Weather | "user" | "insights"
+export type ViewType = "current" | "user" | "insights" | "explorer" | keyof Weather

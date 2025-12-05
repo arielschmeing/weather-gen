@@ -4,17 +4,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/layout/Card";
+} from "@/components/base/Card";
 import { AlertRemoveUser } from "@/components/ui/AlertRemoveUser";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/base/Button";
+import { Input } from "@/components/base/Input";
 import {
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemTitle,
-} from "@/components/ui/Item";
+} from "@/components/base/Item";
 import { useUser } from "@/hooks/useUser";
 
 export const UserPage = () => {

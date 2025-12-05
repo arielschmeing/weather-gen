@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/base/Button";
 import { ROUTER_PATHS } from "@/lib/app.constants";
 import { ArrowBigLeft } from "lucide-react";
 import { useNavigate } from "react-router";

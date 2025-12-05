@@ -9,7 +9,7 @@ interface LoginResponse {
 const cacheUser = new Map<string, User>();
 
 export const userService = {
-  async login({ email, password }: Login): Promise<string | undefined> {
+  async login({ email, password }: Login): Promise<string> {
     const { data, status } = await axios.post<LoginResponse>(API_PATHS.LOGIN, {
       email,
       password,
@@ -23,7 +23,7 @@ export const userService = {
     email,
     password,
     name,
-  }: Register): Promise<true | undefined> {
+  }: Register): Promise<true> {
     const { status } = await axios.post(API_PATHS.USERS, {
       email,
       password,
@@ -35,8 +35,8 @@ export const userService = {
 
     return true;
   },
-  async getUser({ id, token }: GetUserRequest): Promise<User | undefined> {
-    if (cacheUser.has(token)) return cacheUser.get(token);
+  async getUser({ id, token }: GetUserRequest): Promise<User> {
+    if (cacheUser.has(token)) return cacheUser.get(token)!;
 
     const { data, status } = await axios.get(`${API_PATHS.USERS}/${id}`, {
       headers: { Authorization: `Bearer ${token}` },

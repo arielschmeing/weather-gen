@@ -1,6 +1,6 @@
-import { Weather } from '../weather.schema';
+import { Weather } from 'src/modules/weather/schemas/weather.schema';
 
-export const insight = (weathers: Weather[]) => {
+export const insightsPrompt = (weathers: Weather[]) => {
   return `Você receberá a seguir um array de objetos Weather no formato JSON.
 Cada objeto possui: createdAt, latitude, longitude, temperature, umidade, wind, sky, precipitation_probability.
 

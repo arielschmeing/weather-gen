@@ -1,17 +1,21 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './users.schema';
+import { User, UserDocument } from './schemas/users.schema';
 import { Model } from 'mongoose';
 import { CreateUserRequest } from './dto/create-user.request';
 import { ForbiddenUserException } from 'src/exceptions/forbidden-user.exception';
 import { UserResponse } from './dto/user.response';
 import bcrypt from 'node_modules/bcryptjs';
+import { UserMapper } from './mapper/user.mapper';
 
 const SALT = 10;
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private readonly userMapper: UserMapper,
+  ) {}
 
   async create({ email, name, password }: CreateUserRequest): Promise<void> {
     const hashPassword = await bcrypt.hash(password, SALT);
@@ -28,7 +32,7 @@ export class UsersService {
 
   async list(): Promise<UserResponse[]> {
     const users = await this.userModel.find().exec();
-    return users.map((u) => this.toUserResponse(u));
+    return users.map((u) => this.userMapper.toResponse(u));
   }
 
   async findByEmail(email: string): Promise<UserDocument> {
@@ -38,7 +42,7 @@ export class UsersService {
 
   async findById(id: string): Promise<UserResponse> {
     const user = await this.userModel.findById(id).exec();
-    return this.toUserResponse(this.validationUser(user));
+    return this.userMapper.toResponse(this.validationUser(user));
   }
 
   async remove(email: string): Promise<void> {
@@ -83,15 +87,5 @@ export class UsersService {
   private validationUser(user: UserDocument | null): UserDocument {
     if (!user) throw new ForbiddenUserException();
     return user;
-  }
-
-  private toUserResponse(user: UserDocument): UserResponse {
-    return {
-      id: user._id.toString(),
-      createdAt: user.createdAt,
-      email: user.email,
-      name: user.name,
-      updatedAt: user.updatedAt,
-    };
   }
 }

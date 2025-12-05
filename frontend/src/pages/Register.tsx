@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/base/Button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/layout/Card";
+} from "@/components/base/Card";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/base/Input";
 import { useRegister } from "@/hooks/useRegister";
 import { Label } from "@radix-ui/react-label";
 

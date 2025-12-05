@@ -9,8 +9,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./AlertDialog";
-import { Button } from "./Button";
+} from "../base/AlertDialog";
+import { Button } from "../base/Button";
 
 interface AlertRemoveUserPropss {
   onClick: () => void;

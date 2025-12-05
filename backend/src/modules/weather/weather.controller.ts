@@ -8,7 +8,7 @@ import type { Response } from 'express';
 
 @Controller('weather')
 export class WeatherController {
-  constructor(private weatherService: WeatherService) {}
+  constructor(private readonly weatherService: WeatherService) {}
 
   @UseGuards(WeatherGuard)
   @Public()

@@ -4,10 +4,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/layout/Card";
-import { Button } from "@/components/ui/Button";
+} from "@/components/base/Card";
+import { Button } from "@/components/base/Button";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/base/Input";
 import { useLogin } from "@/hooks/useLogin";
 import { Label } from "@radix-ui/react-label";
 import { Cloud } from "lucide-react";

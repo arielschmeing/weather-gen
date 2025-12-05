@@ -4,11 +4,13 @@ import { useInsightsStorage } from "@/app/store/InsightsStorage";
 import { weatherService } from "@/services/weather.service";
 import { ChartBar, ScrollText, TextInitial } from "lucide-react";
 import { use } from "react";
+import { useToast } from "./useToast";
 
 export const useActionsWeather = () => {
   const { accessToken: token } = useAuthStorage();
-  const { setView } = use(MenuViewContext)
-  const { setInsights } = useInsightsStorage()
+  const { setView } = use(MenuViewContext);
+  const { setInsights } = useInsightsStorage();
+  const { error } = useToast();
 
   const exportType = async (format: "csv" | "xlsx") => {
     if (!token) return;
@@ -30,15 +32,16 @@ export const useActionsWeather = () => {
       text: "Insights de IA",
       icon: ScrollText,
       onClick: async () => {
-        setView("insights")
+        setView("insights");
 
-        if(!token) return;
-        
-        const response = await weatherService.insights(token)
-      
-        if(!response) return;
+        if (!token) return;
 
-        setInsights(response);
+        try {
+          const response = await weatherService.insights(token);
+          setInsights(response);
+        } catch {
+          return error("Desculpe não foi possível criar Insights.");
+        }
       },
     },
     {

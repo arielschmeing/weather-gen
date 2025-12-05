@@ -1,13 +1,14 @@
 import { MenuViewContext } from "@/app/context/menuView/useMenuView.context";
 import { useAuthStorage } from "@/app/store/AuthStorage";
-import type { Weather } from "@/app/types/global";
+import type { ViewType } from "@/app/types/global";
 import { ROUTER_PATHS } from "@/lib/app.constants";
 import { use } from "react";
 import { useNavigate } from "react-router";
 
 interface ButtonProps {
-  name: "current" | keyof Weather;
+  name: ViewType;
   text: string;
+  onClick?: () => void;
 }
 
 export const useMenu = () => {
@@ -15,7 +16,7 @@ export const useMenu = () => {
   const { setView, view } = use(MenuViewContext);
   const navigate = useNavigate();
 
-  const onMenuOnClick = (button: ButtonProps) => {
+  const defaultOnClick = (button: ButtonProps) => {
     setView(button.name);
     navigate(ROUTER_PATHS.DASHBOARD);
   };
@@ -36,8 +37,8 @@ export const useMenu = () => {
     },
     home: {
       onClick: () => {
-        setView("current")
-        navigate(ROUTER_PATHS.DASHBOARD)
+        setView("current");
+        navigate(ROUTER_PATHS.DASHBOARD);
       },
     },
   };
@@ -63,12 +64,20 @@ export const useMenu = () => {
       name: "precipitation_probability",
       text: "Precipitação",
     },
+    {
+      name: "explorer",
+      text: "Explorar",
+      onClick: () => {
+        setView("explorer");
+        navigate(ROUTER_PATHS.EXPLORER);
+      },
+    },
   ];
 
   return {
     buttons,
     actionButtons,
-    onMenuOnClick,
+    defaultOnClick,
     view,
   };
 };

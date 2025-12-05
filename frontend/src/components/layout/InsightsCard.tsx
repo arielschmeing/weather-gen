@@ -5,11 +5,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./Card";
+} from "../base/Card";
 import { AlertTriangleIcon, CloudCheck, Stars } from "lucide-react";
 import { useInsightsCard } from "@/hooks/useInsightsCard";
 import { capitalize } from "@/lib/utils";
-import { Spinner } from "../ui/Spinner";
+import { Spinner } from "../base/Spinner";
 
 export const InsightsCard = () => {
   const { view, bodySections, insights } = useInsightsCard();

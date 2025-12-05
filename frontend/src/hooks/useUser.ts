@@ -11,6 +11,7 @@ import {
   type ElementType,
 } from "react";
 import { useNavigate } from "react-router";
+import { useToast } from "./useToast";
 
 interface ItemProps {
   title: string;
@@ -29,6 +30,7 @@ export const useUser = () => {
     user,
     setUser,
   } = useAuthStorage();
+  const { error, success } = useToast();
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
@@ -52,8 +54,8 @@ export const useUser = () => {
       setUser(user);
     };
     fetchUser();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setView, token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setView]);
 
   const items: ItemProps[] = [
     {
@@ -84,18 +86,24 @@ export const useUser = () => {
     {
       title: "Nome",
       props: {
-        value: `${user?.name}`,
+        defaultValue: `${user?.name}`,
         onChange: (e: ChangeEvent<HTMLInputElement>) => setName(e.target.value),
       },
       onClick: async () => {
-        if (!name || name === user?.name || !token) return;
-        await userService.changeName(name, token);
+        if (!name || name === user?.name || !token)
+          return error("Nome inválido. Tente novamente.");
 
-        if (!user) return;
-        setUser({
-          ...user,
-          name,
-        });
+        try {
+          await userService.changeName(name, token);
+          setUser({
+            ...user!,
+            name,
+          });
+        } catch {
+          return error("Erro ao mudar nome. Tente novamente.");
+        }
+
+        return success("Nome mudado.");
       },
     },
     {
@@ -105,12 +113,20 @@ export const useUser = () => {
         onChange: (e: ChangeEvent<HTMLInputElement>) =>
           setPassword(e.target.value),
         type: "password",
-        value: password,
+        defaultValue: password,
       },
       onClick: async () => {
-        if (!password || password.length <= MIN_PASSWORD || !token) return;
-        await userService.changePassword(password, token);
-        setPassword("");
+        if (!password || password.length <= MIN_PASSWORD || !token)
+          return error("Senha inválida. Tente novamente.");
+
+        try {
+          await userService.changePassword(password, token);
+          setPassword("");
+        } catch {
+          return error("Erro ao mudar senha. Tente novamente.")
+        }
+
+        return success("Senha mudada")
       },
     },
   ];
@@ -121,7 +137,7 @@ export const useUser = () => {
 
     if (!response) return;
 
-    setUser(null)
+    setUser(null);
     refreshToken(null);
     navigate(ROUTER_PATHS.LOGIN);
   };

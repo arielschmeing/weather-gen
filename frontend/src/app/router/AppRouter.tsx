@@ -6,6 +6,8 @@ import { ProtectedRouter } from "./ProtectedRouter";
 import { DashboardPage } from "@/pages/Dashboard";
 import { NotFound } from "@/pages/NotFound";
 import { UserPage } from "@/pages/User";
+import { ExplorerPage } from "@/pages/Explorer";
+import { ItemPage } from "@/pages/Item";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +33,19 @@ export const router = createBrowserRouter([
       {
         path: ROUTER_PATHS.USER,
         element: <UserPage />,
+      },
+      {
+        path: ROUTER_PATHS.EXPLORER,
+        children: [
+          {
+            index: true,
+            element: <ExplorerPage />,
+          },
+          {
+            path: ":id",
+            element: <ItemPage />,
+          },
+        ],
       },
     ],
   },

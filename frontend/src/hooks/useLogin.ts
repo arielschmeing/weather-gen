@@ -5,6 +5,7 @@ import type { ChangeEvent } from "react";
 import { useAuthStorage } from "@/app/store/AuthStorage";
 import { userService } from "@/services/user.service";
 import type { Login } from "@/app/types/global";
+import { useToast } from "./useToast";
 const validations = {
   email: (value: string) => {
     if (!value) {
@@ -23,6 +24,7 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const { refreshToken, payload, setUser, accessToken } = useAuthStorage();
   const { data, errors, setValue, submit } = useForm<Login>({ validations });
+  const { error, success } = useToast();
 
   const inputs = {
     email: {
@@ -44,24 +46,26 @@ export const useLogin = () => {
   const actions = {
     login: {
       onClick: async () => {
-        if (!submit()) return;
+        if (!submit()) return error("Insira login e senha.");
 
-        const token = await userService.login(data);
-    
-        if (!token) return;
+        try {
+          const token = await userService.login(data);
 
-        refreshToken(token);
-        const id = payload()?.sub;
-        if (!id || !accessToken) return;
-        
-        const user = await userService.getUser({
-          id,
-          token: accessToken,
-        });
-        
-        if (!user) return;
-        setUser(user);
-        navigate(ROUTER_PATHS.DASHBOARD);
+          refreshToken(token);
+          const id = payload()?.sub;
+          if (!id || !accessToken) throw new Error("Erro ao logar usuário.");
+
+          const user = await userService.getUser({
+            id,
+            token: accessToken,
+          });
+
+          setUser(user);
+          navigate(ROUTER_PATHS.DASHBOARD);
+          success("Login efetuado.");
+        } catch {
+          return error("Usuário inválido");
+        }
       },
     },
     register: {

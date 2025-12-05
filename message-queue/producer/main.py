@@ -12,7 +12,7 @@ def get_weather():
   latitude = os.getenv('LATITUDE')
   longitude = os.getenv('LONGITUDE')
 
-  r = requests.get(os.getenv('API_URL'), params={
+  r = requests.get(os.getenv('WEATHER_API_URL'), params={
     'latitude': latitude,
     'longitude': longitude,
     'current_weather': True,

@@ -4,11 +4,11 @@ import {
   NavigationMenuItem,
   NavigationMenu,
   NavigationMenuList,
-} from "./NavigationMenu";
+} from "../base/NavigationMenu";
 import { NavigationMenuTrigger } from "@radix-ui/react-navigation-menu";
 
 export const Menu = () => {
-  const { buttons, view, actionButtons, onMenuOnClick } = useMenu();
+  const { buttons, view, actionButtons, defaultOnClick } = useMenu();
 
   return (
     <NavigationMenu className="flex min-w-full max-w-full py-6 shadow-md justify-between items-center px-20">
@@ -27,7 +27,11 @@ export const Menu = () => {
       <NavigationMenuList>
         {buttons.map((button) => (
           <NavigationMenuItem key={button.name}>
-            <NavigationMenuTrigger onClick={() => onMenuOnClick(button)}>
+            <NavigationMenuTrigger
+              onClick={
+                button.onClick ? button.onClick : () => defaultOnClick(button)
+              }
+            >
               <span
                 className={`transition-all duration-300 whitespace-nowrap hover:text-green-600 mx-10 my-1 rounded-sm cursor-pointer ${
                   button.name === view ? "text-green-600 " : "text-text-primary"
