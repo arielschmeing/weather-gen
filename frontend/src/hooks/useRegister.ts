@@ -22,7 +22,7 @@ const validations = {
 };
 
 export const useRegister = () => {
-  const { refreshToken, setUser, payload } = useAuthStorage();
+  const { refreshToken, setUser } = useAuthStorage();
   const navigate = useNavigate();
   const { data, errors, setValue, submit } = useForm<Register>({ validations });
   const { error } = useToast();
@@ -70,17 +70,24 @@ export const useRegister = () => {
           });
 
           refreshToken(token);
-          const id = payload()?.sub;
+
+          const parts = token.split(".");
+          const decodedPayload = JSON.parse(atob(parts[1]));
+          const id = decodedPayload?.sub;
+
+          if (!id) {
+            throw new Error("Erro ao obter ID do usuário.");
+          }
 
           const user = await userService.getUser({
-            id: id!,
+            id,
             token,
           });
 
           setUser(user);
           navigate(ROUTER_PATHS.DASHBOARD);
         } catch {
-          return error("Usuário não cadastrado. Email ou Servidor indisponíveis.");
+          return error("Usuário não cadastrado. Email já existe ou servidor indisponível.");
         }
       },
     },

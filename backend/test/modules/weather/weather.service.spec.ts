@@ -80,7 +80,6 @@ describe('WeatherService', () => {
 
       await weatherService.create(weatherRequest);
 
-      // Test passes if no error is thrown
       expect(true).toBe(true);
     });
   });
@@ -176,4 +175,5 @@ describe('WeatherService', () => {
     });
   });
 });
+
 

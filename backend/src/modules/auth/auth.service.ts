@@ -1,11 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginRequest } from './dto/login.request';
 import * as bcrypt from 'bcryptjs';
+import { ForbiddenUserException } from 'src/exceptions';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -15,19 +23,32 @@ export class AuthService {
     email,
     password,
   }: LoginRequest): Promise<{ access_token: string }> {
-    const user = await this.usersService.findByEmail(email);
+    try {
+      const user = await this.usersService.findByEmail(email);
 
-    if (!(await bcrypt.compare(password, user.password))) {
-      throw new BadRequestException('Wrong email or password', {
-        cause: new Error(),
-        description: 'Email or password are not valid.',
-      });
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
+
+      const payload = { sub: user._id, email: user.email };
+
+      return {
+        access_token: this.jwtService.sign(payload),
+      };
+    } catch (error) {
+      if (error instanceof ForbiddenUserException) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
+      if (
+        error instanceof UnauthorizedException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      this.logger.error(`Error during user login: ${email}`, error);
+      throw new UnauthorizedException('Error performing login');
     }
-
-    const payload = { sub: user._id, email: user.email };
-
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
   }
 }

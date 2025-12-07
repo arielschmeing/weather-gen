@@ -22,7 +22,7 @@ const validations = {
 
 export const useLogin = () => {
   const navigate = useNavigate();
-  const { refreshToken, payload, setUser } = useAuthStorage();
+  const { refreshToken, setUser } = useAuthStorage();
   const { data, errors, setValue, submit } = useForm<Login>({ validations });
   const { error, success } = useToast();
 
@@ -52,8 +52,12 @@ export const useLogin = () => {
           const token = await userService.login(data);
 
           refreshToken(token);
-          const id = payload()?.sub;
-          if (!id) throw new Error("Erro ao logar usuário.");
+
+          const parts = token.split(".");
+          const decodedPayload = JSON.parse(atob(parts[1]));
+          const id = decodedPayload?.sub;
+
+          if (!id) throw new Error("Erro ao obter ID do usuário.");
 
           const user = await userService.getUser({
             id,
@@ -64,7 +68,7 @@ export const useLogin = () => {
           navigate(ROUTER_PATHS.DASHBOARD);
           success("Login efetuado.");
         } catch {
-          return error("Usuário inválido");
+          return error("Email ou senha inválidos.");
         }
       },
     },

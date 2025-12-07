@@ -34,8 +34,6 @@ export class ItemMapper {
       url: this.baseAPI + r.url.slice(API_URL_QUERYS_INIT),
     }));
 
-    console.log(formatNext, formatPrevious, formatResults);
-
     return {
       ...response,
       next: formatNext ? this.baseAPI + formatNext : null,

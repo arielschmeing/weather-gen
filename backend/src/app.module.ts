@@ -17,8 +17,6 @@ import { WeatherModule } from './modules/weather/weather.module';
       isGlobal: true,
       validate: (env) => {
         const parsed = envSchema.safeParse(env);
-        console.log(parsed);
-        console.log(parsed.data);
         if (!parsed.success) throw new Error('Invalid environment variables');
         return parsed.data;
       },

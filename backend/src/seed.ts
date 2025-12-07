@@ -17,10 +17,8 @@ const seedData = async (app: INestApplicationContext) => {
       password,
       name: 'Admin',
     });
-
-    console.log('Usuário ADMIN criado com sucesso.');
   } catch (error) {
-    console.error('Erro ao criar usuário ADMIN', error);
+    console.error('Error creating ADMIN user', error);
   }
 };
 
@@ -30,7 +28,7 @@ async function bootstrap() {
   try {
     await seedData(appContext);
   } catch (error) {
-    console.error('Erro na criação do ADMIN', error);
+    console.error('Error creating ADMIN', error);
     process.exit(1);
   } finally {
     await appContext.close();

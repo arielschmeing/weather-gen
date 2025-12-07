@@ -2,7 +2,6 @@ import os
 import json
 import pika
 import time
-import datetime
 import requests
 from dotenv import load_dotenv
 
