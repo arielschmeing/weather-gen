@@ -7,6 +7,6 @@ import { Toaster } from "./components/base/Sonner";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
-    <Toaster />
+    <Toaster className="text-text-secondary" />
   </StrictMode>
 );

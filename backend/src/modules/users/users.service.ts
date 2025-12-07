@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { CreateUserRequest } from './dto/create-user.request';
 import { ForbiddenUserException } from 'src/exceptions/forbidden-user.exception';
 import { UserResponse } from './dto/user.response';
-import bcrypt from 'node_modules/bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import { UserMapper } from './mapper/user.mapper';
 
 const SALT = 10;

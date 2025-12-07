@@ -22,7 +22,7 @@ const validations = {
 };
 
 export const useRegister = () => {
-  const { refreshToken, accessToken, setUser, payload } = useAuthStorage();
+  const { refreshToken, setUser, payload } = useAuthStorage();
   const navigate = useNavigate();
   const { data, errors, setValue, submit } = useForm<Register>({ validations });
   const { error } = useToast();
@@ -71,11 +71,10 @@ export const useRegister = () => {
 
           refreshToken(token);
           const id = payload()?.sub;
-          if (!id || !accessToken) throw new Error("Erro ao logar usuário");
 
           const user = await userService.getUser({
-            id,
-            token: accessToken,
+            id: id!,
+            token,
           });
 
           setUser(user);

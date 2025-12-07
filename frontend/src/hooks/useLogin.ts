@@ -22,7 +22,7 @@ const validations = {
 
 export const useLogin = () => {
   const navigate = useNavigate();
-  const { refreshToken, payload, setUser, accessToken } = useAuthStorage();
+  const { refreshToken, payload, setUser } = useAuthStorage();
   const { data, errors, setValue, submit } = useForm<Login>({ validations });
   const { error, success } = useToast();
 
@@ -53,11 +53,11 @@ export const useLogin = () => {
 
           refreshToken(token);
           const id = payload()?.sub;
-          if (!id || !accessToken) throw new Error("Erro ao logar usuário.");
+          if (!id) throw new Error("Erro ao logar usuário.");
 
           const user = await userService.getUser({
             id,
-            token: accessToken,
+            token,
           });
 
           setUser(user);
