@@ -2,8 +2,6 @@
 
 O **GDASH (Weather Gen Dashboard)** é uma aplicação fullstack completa para monitoramento e análise de dados climáticos em tempo real. O sistema coleta dados meteorológicos automaticamente através de uma arquitetura de mensageria, armazena no banco de dados e disponibiliza através de um dashboard interativo com visualizações gráficas e insights gerados por Inteligência Artificial.
 
-### Vídeo: https://youtu.be/Q0KIA6ro1uI
-
 ### Principais Características
 
 - 🌡️ **Monitoramento em tempo real** de temperatura, umidade, vento e precipitação
